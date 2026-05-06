@@ -245,9 +245,12 @@ function MonitorApp() {
   };
 
   const handleResetAlerts = () => {
+    // 保留当前条目的指纹：服务端列表未变时轮询仍会返回同一告警；清空 ref 会导致下一轮误判为「新告警」再次进入 alerting
+    if (latestAlert) {
+      lastFingerprintRef.current = fingerprintAlert(latestAlert);
+    }
     setAlertState('idle');
     setLatestAlert(null);
-    lastFingerprintRef.current = '';
     addLog('> 告警已复位 · STANDBY', 'info');
   };
 
